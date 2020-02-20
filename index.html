@@ -1,7 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head><title>Simple Image Annotation Tool</title></head>
-    <body>
-        <script src="main.js"></script>
-    </body>
+
+<head>
+    <title>Simple Image Annotation Tool</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <script src="main.js"></script>
+
+    <div id="tool">
+        <div id="toolbar">
+            <input type="radio" id="button-interesting" name="tool-select" value="interesting">
+            <label for="interesting">Interesting</label>
+
+            <input type="radio" id="button-not-interesting" name="tool-select" value="not-interesting">
+            <label for="not-interesting">Not Interesting</label>
+        </div>
+
+        <div id="canvas">
+            <img src="/images/image3.jpg" id="canvas-image">
+        </div>
+
+        <div id="json-ouput">
+            <button type="button" id="json-output-button">JSON Output</button>
+        </div>
+    </div>
+
+</body>
+
 </html>
