@@ -1,0 +1,39 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+#tool {
+    height: 100%;
+    width: 70%;
+    margin: 0 auto;
+}
+
+#toolbar {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px;
+}
+
+#canvas {
+    display: flex;
+    justify-content: center;
+    height: 70%;
+    width: auto;
+}
+
+#canvas-image {
+    height: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+#json-output-button {
+    padding: 5px;
+    margin: 40px;
+    float: right;
+}
