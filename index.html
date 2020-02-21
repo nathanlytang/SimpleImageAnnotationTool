@@ -7,26 +7,27 @@
 </head>
 
 <body>
-    <script src="main.js"></script>
 
     <div id="tool">
         <div id="toolbar">
             <input type="radio" id="button-interesting" name="tool-select" value="interesting">
             <label for="interesting">Interesting</label>
 
-            <input type="radio" id="button-not-interesting" name="tool-select" value="not-interesting">
-            <label for="not-interesting">Not Interesting</label>
+            <input type="radio" id="button-uninteresting" name="tool-select" value="uninteresting">
+            <label for="uninteresting">Uninteresting</label>
         </div>
 
         <div id="canvas">
-            <img src="/images/image3.jpg" id="canvas-image">
+            <canvas id="canvas-draw" width="600" height="600" style="border:1px solid #000000;"></canvas>
         </div>
 
         <div id="json-ouput">
             <button type="button" id="json-output-button">JSON Output</button>
         </div>
+
     </div>
 
+    <script src="main.js"></script>
 </body>
 
 </html>
