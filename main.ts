@@ -22,7 +22,6 @@ type DesiredOutputFormat = {
 
 var canvas = <HTMLCanvasElement>document.getElementById("canvas-draw");
 var ctx = canvas.getContext("2d");
-
 var img = new Image();
 img.src = '/images/image1.jpg';
 img.onload = function() {
@@ -55,7 +54,6 @@ var pointCounter:number = 0
 var annotationCounter:number = 0
 var startPoint = null
 var clickOnCanvas:boolean = false
-
 var output:DesiredOutputFormat = { imageName: img.src.replace(/^.*[\\\/]/, ''), annotations: [], }
 
 canvas.addEventListener("mousedown", function(event){
@@ -84,18 +82,16 @@ canvas.addEventListener("mousedown", function(event){
 
 canvas.addEventListener("mouseup", function(event) {
     if (toolSelected != null && clickOnCanvas) {
-
+        // Increase point counter
         pointCounter+=1;
         let point = String(pointCounter)
         
-        //Establish lower right point
+        // Establish lower right point
         var lowerRightPoint:Point = { pointID: point, x: 0, y: 0, }
-
         lowerRightPoint.x = event.x - canvas.offsetLeft;
         lowerRightPoint.y = event.y - canvas.offsetTop;
         
         ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
-
         annotationCounter+=1;
         let annotation = String(annotationCounter)
 
@@ -114,3 +110,7 @@ canvas.addEventListener("mouseup", function(event) {
     }
 })
 
+function outputJSON() {
+    var outputInJSON = JSON.stringify(output);
+    console.log(outputInJSON)
+}

@@ -54,9 +54,10 @@ canvas.addEventListener("mousedown", function (event) {
 });
 canvas.addEventListener("mouseup", function (event) {
     if (toolSelected != null && clickOnCanvas) {
+        // Increase point counter
         pointCounter += 1;
         var point = String(pointCounter);
-        //Establish lower right point
+        // Establish lower right point
         var lowerRightPoint = { pointID: point, x: 0, y: 0 };
         lowerRightPoint.x = event.x - canvas.offsetLeft;
         lowerRightPoint.y = event.y - canvas.offsetTop;
@@ -77,3 +78,7 @@ canvas.addEventListener("mouseup", function (event) {
         clickOnCanvas = false;
     }
 });
+function outputJSON() {
+    var outputInJSON = JSON.stringify(output);
+    console.log(outputInJSON);
+}
