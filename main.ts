@@ -1,8 +1,27 @@
+// Custom Types
+
+type Point = {
+    pointID: string,
+    x: number,
+    y: number,
+};
+
+type Annotation = {
+    annotationID: string,
+    upperLeft: Point,
+    lowerRight: Point,
+    type: "Interesting"|"Uninteresting"
+};
+
+type DesiredOutputFormat = {
+    imageName: string
+    annotations: Annotation[]
+};
+
 // Initialize canvas
 
 var canvas = <HTMLCanvasElement>document.getElementById("canvas-draw");
 var ctx = canvas.getContext("2d");
-
 var img = new Image();
 img.src = '/images/image1.jpg';
 img.onload = function() {
@@ -30,12 +49,12 @@ img.onload = function() {
 
 // Bounding Boxes
 
-var listOfBoxes:object[] = []
-var startMouseX:number = 0;
-var startMouseY:number = 0;
-var endMouseX:number = 0;   
-var endMouseY:number = 0;
-var toolSelected:string = null
+var toolSelected:string = null;
+var pointCounter:number = 0
+var annotationCounter:number = 0
+var startPoint = null
+var clickOnCanvas:boolean = false
+var output:DesiredOutputFormat = { imageName: img.src.replace(/^.*[\\\/]/, ''), annotations: [], }
 
 canvas.addEventListener("mousedown", function(event){
     // Check which tool is selected
@@ -48,27 +67,50 @@ canvas.addEventListener("mousedown", function(event){
         toolSelected = "Uninteresting"
     }
     if (toolSelected != null) {
-    startMouseX = event.x;
-    startMouseY = event.y;
-    startMouseX -= canvas.offsetLeft;
-    startMouseY -= canvas.offsetTop;
+        clickOnCanvas = true
+        pointCounter+=1;
+        let point = String(pointCounter)
+
+        // Establish upper left point
+        var upperLeftPoint:Point = { pointID: point, x: 0, y: 0, }
+        upperLeftPoint.x = event.x - canvas.offsetLeft;
+        upperLeftPoint.y = event.y - canvas.offsetTop;
+        startPoint = upperLeftPoint
+
     }
 })
 
 canvas.addEventListener("mouseup", function(event) {
-    if (toolSelected != null) {
-    endMouseX = event.x;   
-    endMouseY = event.y;
-    endMouseX -= canvas.offsetLeft;
-    endMouseY -= canvas.offsetTop;
-    ctx.strokeRect(startMouseX, startMouseY, endMouseX-startMouseX, endMouseY-startMouseY); // Draw rectangle
-    var box = { // Create box object with start and end coordinates
-        startCoors: [startMouseX, startMouseY],
-        endCoors: [endMouseX, endMouseY],
-        toolSelected: toolSelected
-    }
-    listOfBoxes.push(box) // Push box to array listOfBoxes
-    console.log(listOfBoxes)
+    if (toolSelected != null && clickOnCanvas) {
+        // Increase point counter
+        pointCounter+=1;
+        let point = String(pointCounter)
+        
+        // Establish lower right point
+        var lowerRightPoint:Point = { pointID: point, x: 0, y: 0, }
+        lowerRightPoint.x = event.x - canvas.offsetLeft;
+        lowerRightPoint.y = event.y - canvas.offsetTop;
+        
+        ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
+        annotationCounter+=1;
+        let annotation = String(annotationCounter)
 
+        // Create new box object
+        var box:Annotation = { annotationID: annotation, upperLeft: startPoint, lowerRight: lowerRightPoint, type: null, }
+        if (toolSelected == "Interesting") {
+            box.type = "Interesting"
+        } else if (toolSelected == "Uninteresting") {
+            box.type = "Uninteresting"
+        }
+        
+        // Push box object to annotations list
+        output.annotations.push(box)
+        console.log(output)
+        clickOnCanvas = false
     }
 })
+
+function outputJSON():void {
+    var outputInJSON = JSON.stringify(output);
+    console.log(outputInJSON)
+}
