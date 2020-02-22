@@ -1,3 +1,4 @@
+// Custom Types
 // Initialize canvas
 var canvas = document.getElementById("canvas-draw");
 var ctx = canvas.getContext("2d");
@@ -24,13 +25,13 @@ img.onload = function () {
     }
 };
 // Bounding Boxes
-var listOfBoxes = [];
-var startMouseX = 0;
-var startMouseY = 0;
-var endMouseX = 0;
-var endMouseY = 0;
 var toolSelected = null;
+var pointCounter = 0;
+var annotationCounter = 0;
+var startPoint = null;
+var output = { imageName: img.src, annotations: [] };
 canvas.addEventListener("mousedown", function (event) {
+    // Check which tool is selected
     if (document.getElementById("button-interesting").checked) {
         ctx.strokeStyle = "blue";
         toolSelected = "Interesting";
@@ -40,26 +41,26 @@ canvas.addEventListener("mousedown", function (event) {
         toolSelected = "Uninteresting";
     }
     if (toolSelected != null) {
-        startMouseX = event.x;
-        startMouseY = event.y;
-        startMouseX -= canvas.offsetLeft;
-        startMouseY -= canvas.offsetTop;
+        pointCounter += 1;
+        var upperLeftPoint = { pointID: null, x: 0, y: 0 };
+        upperLeftPoint.x = event.x - canvas.offsetLeft;
+        upperLeftPoint.y = event.y - canvas.offsetTop;
+        startPoint = upperLeftPoint;
     }
 });
 canvas.addEventListener("mouseup", function (event) {
     if (toolSelected != null) {
-        endMouseX = event.x;
-        endMouseY = event.y;
-        endMouseX -= canvas.offsetLeft;
-        endMouseY -= canvas.offsetTop;
-        ctx.strokeRect(startMouseX, startMouseY, endMouseX - startMouseX, endMouseY - startMouseY); // Draw rectangle
-        console.log(startMouseX, startMouseY, endMouseX, endMouseY);
+        var lowerRightPoint = { pointID: null, x: 0, y: 0 };
+        lowerRightPoint.x = event.x - canvas.offsetLeft;
+        lowerRightPoint.y = event.y - canvas.offsetTop;
+        ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
         var box = {
-            startCoors: [startMouseX, startMouseY],
-            endCoors: [endMouseX, endMouseY],
-            toolSelected: toolSelected
+            annotationID: null,
+            upperLeft: startPoint,
+            lowerRight: lowerRightPoint,
+            type: toolSelected
         };
-        listOfBoxes.push(box); // Push box to array listOfBoxes
-        console.log(listOfBoxes);
+        output.annotations.push(box);
+        console.log(output);
     }
 });

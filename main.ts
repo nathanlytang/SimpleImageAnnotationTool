@@ -1,3 +1,23 @@
+// Custom Types
+
+type Point = {
+    pointID: string,
+    x: number,
+    y: number,
+};
+
+type Annotation = {
+    annotationID: string,
+    upperLeft: Point,
+    lowerRight: Point,
+    type: string // Changed type from "Interesting"|"Unintersting" to string for reusability
+};
+
+type DesiredOutputFormat = {
+    imageName: string
+    annotations: Annotation[]
+};
+
 // Initialize canvas
 
 var canvas = <HTMLCanvasElement>document.getElementById("canvas-draw");
@@ -30,12 +50,12 @@ img.onload = function() {
 
 // Bounding Boxes
 
-var listOfBoxes:object[] = []
-var startMouseX:number = 0;
-var startMouseY:number = 0;
-var endMouseX:number = 0;   
-var endMouseY:number = 0;
-var toolSelected:string = null
+var toolSelected:string = null;
+var pointCounter:number = 0
+var annotationCounter:number = 0
+var startPoint = null
+
+var output:DesiredOutputFormat = { imageName: img.src, annotations: [], }
 
 canvas.addEventListener("mousedown", function(event){
     // Check which tool is selected
@@ -48,27 +68,34 @@ canvas.addEventListener("mousedown", function(event){
         toolSelected = "Uninteresting"
     }
     if (toolSelected != null) {
-    startMouseX = event.x;
-    startMouseY = event.y;
-    startMouseX -= canvas.offsetLeft;
-    startMouseY -= canvas.offsetTop;
+        pointCounter+=1;
+        var upperLeftPoint:Point = { pointID: null, x: 0, y: 0, }
+        
+        upperLeftPoint.x = event.x - canvas.offsetLeft;
+        upperLeftPoint.y = event.y - canvas.offsetTop;
+        startPoint = upperLeftPoint
+
     }
 })
 
 canvas.addEventListener("mouseup", function(event) {
     if (toolSelected != null) {
-    endMouseX = event.x;   
-    endMouseY = event.y;
-    endMouseX -= canvas.offsetLeft;
-    endMouseY -= canvas.offsetTop;
-    ctx.strokeRect(startMouseX, startMouseY, endMouseX-startMouseX, endMouseY-startMouseY); // Draw rectangle
-    var box = { // Create box object with start and end coordinates
-        startCoors: [startMouseX, startMouseY],
-        endCoors: [endMouseX, endMouseY],
-        toolSelected: toolSelected
-    }
-    listOfBoxes.push(box) // Push box to array listOfBoxes
-    console.log(listOfBoxes)
+        
+        var lowerRightPoint:Point = { pointID: null, x: 0, y: 0, }
 
+        lowerRightPoint.x = event.x - canvas.offsetLeft;
+        lowerRightPoint.y = event.y - canvas.offsetTop;
+        
+        ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
+
+        var box:Annotation = {
+            annotationID: null,
+            upperLeft: startPoint,
+            lowerRight: lowerRightPoint,
+            type: toolSelected,
+        }
+
+        output.annotations.push(box)
+        console.log(output)
     }
 })
