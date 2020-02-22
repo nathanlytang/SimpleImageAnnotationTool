@@ -29,7 +29,8 @@ var toolSelected = null;
 var pointCounter = 0;
 var annotationCounter = 0;
 var startPoint = null;
-var output = { imageName: img.src, annotations: [] };
+var clickOnCanvas = false;
+var output = { imageName: img.src.replace(/^.*[\\\/]/, ''), annotations: [] };
 canvas.addEventListener("mousedown", function (event) {
     // Check which tool is selected
     if (document.getElementById("button-interesting").checked) {
@@ -41,26 +42,38 @@ canvas.addEventListener("mousedown", function (event) {
         toolSelected = "Uninteresting";
     }
     if (toolSelected != null) {
+        clickOnCanvas = true;
         pointCounter += 1;
-        var upperLeftPoint = { pointID: null, x: 0, y: 0 };
+        var point = String(pointCounter);
+        // Establish upper left point
+        var upperLeftPoint = { pointID: point, x: 0, y: 0 };
         upperLeftPoint.x = event.x - canvas.offsetLeft;
         upperLeftPoint.y = event.y - canvas.offsetTop;
         startPoint = upperLeftPoint;
     }
 });
 canvas.addEventListener("mouseup", function (event) {
-    if (toolSelected != null) {
-        var lowerRightPoint = { pointID: null, x: 0, y: 0 };
+    if (toolSelected != null && clickOnCanvas) {
+        pointCounter += 1;
+        var point = String(pointCounter);
+        //Establish lower right point
+        var lowerRightPoint = { pointID: point, x: 0, y: 0 };
         lowerRightPoint.x = event.x - canvas.offsetLeft;
         lowerRightPoint.y = event.y - canvas.offsetTop;
         ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
-        var box = {
-            annotationID: null,
-            upperLeft: startPoint,
-            lowerRight: lowerRightPoint,
-            type: toolSelected
-        };
+        annotationCounter += 1;
+        var annotation = String(annotationCounter);
+        // Create new box object
+        var box = { annotationID: annotation, upperLeft: startPoint, lowerRight: lowerRightPoint, type: null };
+        if (toolSelected == "Interesting") {
+            box.type = "Interesting";
+        }
+        else if (toolSelected == "Uninteresting") {
+            box.type = "Uninteresting";
+        }
+        // Push box object to annotations list
         output.annotations.push(box);
         console.log(output);
+        clickOnCanvas = false;
     }
 });

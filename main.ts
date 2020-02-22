@@ -10,7 +10,7 @@ type Annotation = {
     annotationID: string,
     upperLeft: Point,
     lowerRight: Point,
-    type: string // Changed type from "Interesting"|"Unintersting" to string for reusability
+    type: "Interesting"|"Uninteresting"
 };
 
 type DesiredOutputFormat = {
@@ -54,8 +54,9 @@ var toolSelected:string = null;
 var pointCounter:number = 0
 var annotationCounter:number = 0
 var startPoint = null
+var clickOnCanvas:boolean = false
 
-var output:DesiredOutputFormat = { imageName: img.src, annotations: [], }
+var output:DesiredOutputFormat = { imageName: img.src.replace(/^.*[\\\/]/, ''), annotations: [], }
 
 canvas.addEventListener("mousedown", function(event){
     // Check which tool is selected
@@ -68,9 +69,12 @@ canvas.addEventListener("mousedown", function(event){
         toolSelected = "Uninteresting"
     }
     if (toolSelected != null) {
+        clickOnCanvas = true
         pointCounter+=1;
-        var upperLeftPoint:Point = { pointID: null, x: 0, y: 0, }
-        
+        let point = String(pointCounter)
+
+        // Establish upper left point
+        var upperLeftPoint:Point = { pointID: point, x: 0, y: 0, }
         upperLeftPoint.x = event.x - canvas.offsetLeft;
         upperLeftPoint.y = event.y - canvas.offsetTop;
         startPoint = upperLeftPoint
@@ -79,23 +83,34 @@ canvas.addEventListener("mousedown", function(event){
 })
 
 canvas.addEventListener("mouseup", function(event) {
-    if (toolSelected != null) {
+    if (toolSelected != null && clickOnCanvas) {
+
+        pointCounter+=1;
+        let point = String(pointCounter)
         
-        var lowerRightPoint:Point = { pointID: null, x: 0, y: 0, }
+        //Establish lower right point
+        var lowerRightPoint:Point = { pointID: point, x: 0, y: 0, }
 
         lowerRightPoint.x = event.x - canvas.offsetLeft;
         lowerRightPoint.y = event.y - canvas.offsetTop;
         
         ctx.strokeRect(startPoint.x, startPoint.y, lowerRightPoint.x - startPoint.x, lowerRightPoint.y - startPoint.y); // Draw rectangle
 
-        var box:Annotation = {
-            annotationID: null,
-            upperLeft: startPoint,
-            lowerRight: lowerRightPoint,
-            type: toolSelected,
-        }
+        annotationCounter+=1;
+        let annotation = String(annotationCounter)
 
+        // Create new box object
+        var box:Annotation = { annotationID: annotation, upperLeft: startPoint, lowerRight: lowerRightPoint, type: null, }
+        if (toolSelected == "Interesting") {
+            box.type = "Interesting"
+        } else if (toolSelected == "Uninteresting") {
+            box.type = "Uninteresting"
+        }
+        
+        // Push box object to annotations list
         output.annotations.push(box)
         console.log(output)
+        clickOnCanvas = false
     }
 })
+
