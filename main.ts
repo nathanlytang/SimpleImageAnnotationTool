@@ -110,7 +110,7 @@ canvas.addEventListener("mouseup", function(event) {
     }
 })
 
-function outputJSON() {
+function outputJSON():void {
     var outputInJSON = JSON.stringify(output);
     console.log(outputInJSON)
 }
