@@ -23,7 +23,7 @@ type DesiredOutputFormat = {
 var canvas = <HTMLCanvasElement>document.getElementById("canvas-draw");
 var ctx = canvas.getContext("2d");
 var img = new Image();
-img.src = '/images/image1.jpg';
+img.src = 'images/image1.jpg';
 img.onload = function() {
     var aspectRatio:number = img.width / img.height
 
