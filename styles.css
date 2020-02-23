@@ -2,6 +2,8 @@ html, body {
     height: 100%;
     width: 100%;
     margin: 0;
+    background: #2c3e50;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 #tool {
@@ -14,7 +16,35 @@ html, body {
     display: flex;
     justify-content: center;
     padding: 10px 0px;
+    margin: 10px;
+    color: #E1E1E1;
 }
+
+.toolbar-buttons {
+    user-select: none;
+    margin: 0px 10px;
+}
+
+label {
+    display: inline-flex;
+    width: 150px;
+    height: 35px;
+    border: solid 2px gray;
+    align-items: center;
+    justify-content: center;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked + label {
+    border: solid 2px white;
+  }
 
 #canvas {
     display: flex;
@@ -27,4 +57,21 @@ html, body {
     padding: 5px;
     margin: 40px;
     float: right;
+    cursor: pointer;
+    border: solid 2px gray;
+    background-color: transparent;
+    color: #E1E1E1;
+    padding: 10px 10px;
+    user-select: none;
+    outline: none;
+}
+
+#json-output-button:hover {
+    border-color: white;
+}
+
+#json-output-button:active {
+    background-color: white;
+    color: black;
+    transition-duration: 0.1s;
 }
